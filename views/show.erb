@@ -2,8 +2,8 @@
   <div>
     <h2>Result</h2>
     <p>Domain <%= @domain %></p>
-    <p>Tipo A, Nome @<%= @a_root %></p>
-    <p>Tipo A, Nome www <%= @a_www %></p>
-    <p>Tipo CNAME, Nome www <%= @cname_www %></p>
+    <p>Tipo A, Nome @: <%= @a_root.join(' - ')  %></p>
+    <p>Tipo A, Nome www: <%= @a_www.join(' - ')  %></p>
+    <p>Tipo CNAME, Nome www: <%= @cname_www.join(' - ') %></p>
   </div>
 </section>

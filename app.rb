@@ -35,13 +35,13 @@ class App < Sinatra::Base
       root_domain = domain.gsub(/^www\./, '')
 
       a_records_root = dns.getresources root_domain, Resolv::DNS::Resource::IN::A
-      a_root = a_records_root.map(&:address)
+      a_root = a_records_root.map { |record| record.address.to_s }
 
       cname_records_www = dns.getresources "www.#{root_domain}", Resolv::DNS::Resource::IN::CNAME
-      cname_www = cname_records_www.map(&:name)
+      cname_www = cname_records_www.map { |record| record.name.to_s }
 
       a_records_www = dns.getresources "www.#{root_domain}", Resolv::DNS::Resource::IN::A
-      a_www = a_records_www.map(&:address)
+      a_www = a_records_www.map { |record| record.address.to_s }
 
       return a_root, cname_www, a_www
     end
@@ -55,9 +55,6 @@ class App < Sinatra::Base
     @domain = session[:domain]
     @a_root, @cname_www, @a_www = get_dns(@domain)
 
-    puts "DNS tipo A da raiz do domínio: #{@a_root}"
-    puts "CNAME do domínio com 'www': #{@cname_www}"
-    puts "DNS tipo A do domínio com 'www': #{@a_www}"
     erb :show
   end
 
