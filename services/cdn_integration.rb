@@ -6,14 +6,20 @@ require 'dotenv'
 Dotenv.load
 
 class CloudFrontIntegration
-  def self.request_distributions
-    cdn_client = Aws::CloudFront::Client.new(region: ENV.fetch('AWS_REGION', nil))
-
+  def self.list_distributions
     response = cdn_client.list_distributions
 
     response.distribution_list.items
   end
+
+  private
+
+  def self.cdn_client
+    @cdn_client ||= Aws::CloudFront::Client.new(region: ENV.fetch('AWS_REGION', nil))
+  end
+
+  private_class_method :cdn_client
 end
 
-result = CloudFrontIntegration.request_distributions
+result = CloudFrontIntegration.list_distributions
 p result
