@@ -62,8 +62,3 @@ class AcmIntegration
 
   private_class_method :acm_client, :validations_for_certificate, :validation_data_for, :domain_matches?
 end
-
-# result = AcmIntegration.list_certificates
-# p "resultado: #{result}"
-
-puts AcmIntegration.specified_domain_certificate('viasulmt.com.br')
