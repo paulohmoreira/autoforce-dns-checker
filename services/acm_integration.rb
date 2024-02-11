@@ -41,18 +41,19 @@ class AcmIntegration
     detailed_info = acm_client.describe_certificate(certificate_arn: certificate.certificate_arn)
     validation_options = detailed_info.certificate.domain_validation_options
     validation_options.filter_map do |validation|
-      validation_data_for(validation, specified_domain)
+      validation_data_for(validation, specified_domain, certificate.certificate_arn)
     end.compact
   end
 
-  def self.validation_data_for(validation, specified_domain)
+  def self.validation_data_for(validation, specified_domain, certificate_arn)
     return unless domain_matches?(validation, specified_domain)
     return unless validation.validation_method == 'DNS' && validation.resource_record
 
     {
       domain_name: validation.domain_name,
       name_cname: validation.resource_record.name,
-      value: validation.resource_record.value
+      value: validation.resource_record.value,
+      certificate_arn: certificate_arn
     }
   end
 
