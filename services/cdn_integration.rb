@@ -6,10 +6,11 @@ require 'dotenv'
 Dotenv.load
 
 class CloudFrontIntegration
-  def self.list_distributions
-    response = cdn_client.list_distributions
-
-    response.distribution_list.items
+  def self.find_distribution_by_certificate_arn(arn)
+    distribution_list = list_distributions
+    distribution_list.each do |distribution|
+      return distribution.domain_name if distribution.viewer_certificate.acm_certificate_arn == arn
+    end
   end
 
   private
@@ -18,8 +19,26 @@ class CloudFrontIntegration
     @cdn_client ||= Aws::CloudFront::Client.new(region: ENV.fetch('AWS_REGION', nil))
   end
 
-  private_class_method :cdn_client
-end
+  def self.list_distributions # rubocop:disable Metrics/MethodLength
+    distributions = []
+    next_marker = nil
 
-result = CloudFrontIntegration.list_distributions
-p result
+    loop do
+      response = cdn_client.list_distributions(
+        marker: next_marker
+      )
+
+      break unless response.distribution_list&.items
+
+      distributions.concat(response.distribution_list.items)
+
+      break unless response.distribution_list.is_truncated
+
+      next_marker = response.distribution_list.next_marker
+    end
+
+    distributions
+  end
+
+  private_class_method :cdn_client, :list_distributions
+end
