@@ -42,7 +42,7 @@ class AcmIntegration
       domain_name: validation.domain_name,
       name_cname: validation.resource_record.name,
       value: validation.resource_record.value,
-      certificate_arn: certificate_arn
+      certificate_arn:
     }
   end
 
@@ -50,5 +50,6 @@ class AcmIntegration
     validation.domain_name == domain || validation.domain_name.include?(domain)
   end
 
-  private_class_method :acm_client, :list_certificates, :validations_for_certificate, :validation_data_for, :domain_matches?
+  private_class_method :acm_client, :list_certificates, :validations_for_certificate, :validation_data_for,
+                       :domain_matches?
 end
