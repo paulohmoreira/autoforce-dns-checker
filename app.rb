@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/base'
 require 'sinatra/reloader'
 require 'resolv'
+require_relative 'services/acm_integration'
 
 class App < Sinatra::Base
   configure :development do
@@ -31,6 +32,9 @@ class App < Sinatra::Base
   get '/show' do
     @domain = session[:domain]
     @a_root, @cname_www, @a_www = get_dns(@domain)
+
+    @root_domain = extract_root_domain(@domain)
+    @acm_certificate = AcmIntegration.specified_domain_certificate(@root_domain)
 
     erb :show
   end

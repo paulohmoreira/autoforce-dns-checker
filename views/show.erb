@@ -7,3 +7,25 @@
     <p>Tipo CNAME, Nome www: <%= @cname_www.join(' - ') %></p>
   </div>
 </section>
+
+<section>
+<h2>Certificados:</h2>
+  <% if @acm_certificate.empty? %>
+    <p>Não foi encontrado nenhum certificado para o domínio <strong><%= @root_domain %></strong></p>
+  <% else %>
+    <% @acm_certificate.each do |certificate| %>
+      <% next if certificate[:domain_name] == "*.#{@root_domain}" %>
+      <ul>
+        <li>
+          Domínio: <%= certificate[:domain_name] %>
+        </li>
+        <li>
+          Nome: <%= certificate[:name_cname] %>
+        </li>
+        <li>
+          Valor: <%= certificate[:value] %>
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+</section>
